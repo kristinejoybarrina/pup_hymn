@@ -205,44 +205,61 @@
     <p>&copy; 2017 | Polytechnic University of the Philippines</p>
   </footer>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const lyricsContainer = document.getElementById("lyrics-container");
-      const lyrics = document.getElementById("lyrics");
-      const audio = document.getElementById("puphymnAudio");
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const lyricsContainer = document.getElementById("lyrics-container");
+    const lyrics = document.getElementById("lyrics");
+    const audio = document.getElementById("puphymnAudio");
 
-      // Check if the audio can start playing
-      audio.oncanplaythrough = function () {
-        // Unmute the audio and start playing
-        audio.muted = false; // Unmute
-        audio.play(); // Start playing
-      };
+    let audioReady = false;
 
-      // Scroll lyrics based on the audio time
-      function scrollLyrics() {
-        if (!audio.duration) return;
-        const duration = audio.duration;
-        const currentTime = audio.currentTime;
-        const maxScroll = lyrics.scrollHeight - lyricsContainer.clientHeight;
-        const scrollPosition = (currentTime / duration) * maxScroll;
-        lyrics.style.transition = "transform 0.5s linear";
-        lyrics.style.transform = `translateY(-${scrollPosition}px)`;
+    // Primary attempt to load audio
+    audio.oncanplaythrough = function () {
+      audioReady = true;
+      audio.muted = false;
+      audio.volume = 1.0; // Ensure full volume
+      audio.play();
+    };
+
+    // Fallback if oncanplaythrough is not triggered
+    setTimeout(() => {
+      if (!audioReady && audio.readyState >= 2) {
+        audio.muted = false;
+        audio.volume = 1.0;
+        audio.play();
       }
+    }, 3000); // 3 seconds fallback
 
-      // Update lyrics scroll as the audio progresses
-      audio.addEventListener("timeupdate", scrollLyrics);
-      audio.addEventListener("seeked", scrollLyrics);
+    // Scroll lyrics function
+    function scrollLyrics() {
+      if (!audio.duration || isNaN(audio.duration)) return;
+      const duration = audio.duration;
+      const currentTime = audio.currentTime;
+      const maxScroll = lyrics.scrollHeight - lyricsContainer.clientHeight;
+      const scrollPosition = (currentTime / duration) * maxScroll;
+      lyrics.style.transition = "transform 0.5s linear";
+      lyrics.style.transform = `translateY(-${scrollPosition}px)`;
+    }
 
-      // Rewind button functionality
-      document.getElementById("rewindBtn").addEventListener("click", function () {
-        audio.currentTime = Math.max(0, audio.currentTime - 10); // Rewind by 10 seconds
-      });
+    // Bind scroll to audio time update
+    audio.addEventListener("timeupdate", scrollLyrics);
+    audio.addEventListener("seeked", scrollLyrics);
 
-      // Forward button functionality
-      document.getElementById("forwardBtn").addEventListener("click", function () {
-        audio.currentTime = Math.min(audio.duration, audio.currentTime + 10); // Forward by 10 seconds
-      });
+    // Rewind button
+    document.getElementById("rewindBtn").addEventListener("click", function () {
+      if (!audio.duration || isNaN(audio.duration)) return;
+      console.log("Rewind clicked. Current time:", audio.currentTime);
+      audio.currentTime = Math.max(0, audio.currentTime - 10);
     });
-  </script>
+
+    // Forward button
+    document.getElementById("forwardBtn").addEventListener("click", function () {
+      if (!audio.duration || isNaN(audio.duration)) return;
+      console.log("Forward clicked. Current time:", audio.currentTime);
+      audio.currentTime = Math.min(audio.duration, audio.currentTime + 10);
+    });
+  });
+</script>
+
 </body>
 </html>
