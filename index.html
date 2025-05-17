@@ -1,0 +1,248 @@
+<!-- Kristine Joy Barrina || BSCPE 3-6 -->
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PUP Hymn</title>
+  <link rel="icon" href="/files/PUPLogo.png" type="image/x-icon" />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      font-family: sans-serif;
+      background: url('/files/pupBg.png') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    header {
+      background-color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      flex-wrap: wrap;
+    }
+
+    header img {
+      width: 72px;
+      height: 72px;
+      flex-shrink: 0;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.5em;
+      color: #800000;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 32px 16px;
+      box-sizing: border-box;
+    }
+
+    .hymn-container {
+      background-color: white;
+      border-radius: 16px;
+      padding: 16px;
+      width: 100%;
+      max-width: 800px;
+      box-sizing: border-box;
+      text-align: center;
+      color: #800000;
+    }
+
+    #lyrics-container {
+      height: 300px;
+      overflow: hidden;
+      position: relative;
+      color: #000;
+    }
+
+    #lyrics {
+      font-size: 1.2em;
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+
+    audio {
+      width: 100%;
+      max-width: 100%;
+      margin-top: 16px;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .controls button {
+      font-size: 1em;
+      padding: 10px 20px;
+      background-color: #800000;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .controls button:hover {
+      background-color: #4b1212;
+    }
+
+    footer {
+      background-color: rgba(255, 255, 255, 0.95);
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9em;
+      color: #800000;
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      header img {
+        width: 64px;
+        height: 64px;
+      }
+
+      header h1 {
+        font-size: 1.2em;
+      }
+
+      #lyrics {
+        font-size: 1em;
+        padding-top: 25px;
+        padding-bottom: 25px; 
+      }
+
+      audio {
+        width: 90%;
+        margin-top: 20px; 
+        margin-bottom: 20px; 
+      }
+
+      .controls {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 20px;
+        margin-bottom: 30px; 
+      }
+
+      .controls button {
+        font-size: 1.1em; 
+        padding: 12px 24px; 
+      }
+
+      .controls button:hover {
+        background-color: #4b1212;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="/files/PUPLogo.png" alt="PUP Logo" />
+    <h1>Polytechnic University of the Philippines</h1>
+  </header>
+
+  <main>
+    <div class="hymn-container">
+      <h1>PUP Hymn</h1>
+      <div id="lyrics-container">
+        <div id="lyrics">
+          <p>
+            Sintang Paaralan<br />
+            Tanglaw ka ng bayan<br />
+            Pandayan ng isip ng kabataan<br />
+            Kami ay dumating nang salat sa yaman<br />
+            Hanap na dunong ay iyong alay<br />
+            Ang layunin mong makatao<br />
+            Dinarangal ang Pilipino<br />
+            Ang iyong aral, diwa, adhikang taglay<br />
+            PUP, aming gabay<br />
+            Paaralang dakila<br />
+            PUP, pinagpala<br />
+            Gagamitin ang karunungan<br />
+            Mula sa iyo, para sa bayan<br />
+            Ang iyong aral, diwa, adhikang taglay<br />
+            PUP, aming gabay<br />
+            Paaralang dakila<br />
+            PUP, pinagpala<br />
+          </p>
+        </div>
+      </div>
+
+      <audio id="puphymnAudio" controls autoplay muted>
+        <source src="/files/puphymn.mp3" type="audio/mpeg" />
+        Your browser does not support the audio element.
+      </audio>
+
+      <div class="controls">
+        <button id="rewindBtn">&laquo; Rewind</button>
+        <button id="forwardBtn">Forward &raquo;</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2017 | Polytechnic University of the Philippines</p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const lyricsContainer = document.getElementById("lyrics-container");
+      const lyrics = document.getElementById("lyrics");
+      const audio = document.getElementById("puphymnAudio");
+
+      // Check if the audio can start playing
+      audio.oncanplaythrough = function () {
+        // Unmute the audio and start playing
+        audio.muted = false; // Unmute
+        audio.play(); // Start playing
+      };
+
+      // Scroll lyrics based on the audio time
+      function scrollLyrics() {
+        if (!audio.duration) return;
+        const duration = audio.duration;
+        const currentTime = audio.currentTime;
+        const maxScroll = lyrics.scrollHeight - lyricsContainer.clientHeight;
+        const scrollPosition = (currentTime / duration) * maxScroll;
+        lyrics.style.transition = "transform 0.5s linear";
+        lyrics.style.transform = `translateY(-${scrollPosition}px)`;
+      }
+
+      // Update lyrics scroll as the audio progresses
+      audio.addEventListener("timeupdate", scrollLyrics);
+      audio.addEventListener("seeked", scrollLyrics);
+
+      // Rewind button functionality
+      document.getElementById("rewindBtn").addEventListener("click", function () {
+        audio.currentTime = Math.max(0, audio.currentTime - 10); // Rewind by 10 seconds
+      });
+
+      // Forward button functionality
+      document.getElementById("forwardBtn").addEventListener("click", function () {
+        audio.currentTime = Math.min(audio.duration, audio.currentTime + 10); // Forward by 10 seconds
+      });
+    });
+  </script>
+</body>
+</html>
